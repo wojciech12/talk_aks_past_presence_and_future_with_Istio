@@ -1,0 +1,829 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Azure Kubernetes Service</title>
+
+		<!-- bootstrap -->
+		<link rel="stylesheet" href="ext/bootstrap-4.1.3/css/bootstrap.css">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!-- remove annoying shadow around images -->
+		<style>
+			.reveal section img {
+				background-color:white;
+				border:0;
+				box-shadow: 0 0 0 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Azure Kubernetes Service</h3>
+
+					<img src="img/azure_love_k8s.png" class="center-block" style="background-color:white;border:0;width:100%"/>
+					<br />
+					<br />
+
+					<h6><small>W<span style="text-transform: lowercase;">ojciech</span> B<span style="text-transform: lowercase;">arczyński</span> - <a href="https://hypatos.io" style="color:#fe702f">H<span style="text-transform: lowercase;">ypatos.ai</span></a><br />
+							<span style="text-transform: lowercase;">wbarczynski.pro@gmail.com</span></small>
+				</section>
+
+				<section>
+					<h3>Wojciech Barczyński</h3>
+					<div class="container">
+						<div class="row">
+							<div class='col-md-8'>
+								<ul>
+									<li>Lead Software Engineer &amp; System Engineer</li>
+									<li>Golang Warsaw Organizer</li>
+									<li>Interests:<br />working software</li>
+									<li>Hobby:<br />teaching software engineerings</li>
+								</ul>
+							</div>
+							<div class='col-md-3'>
+								<img style="padding:12px" src="img/logo_smacc_hypatos.png" />
+							</div>
+						</div>
+						<p><small>Talks &amp; Trainings - wbarczynski.pl</small></p>
+					</section>
+
+
+				<section>
+					<h3>Background</h3>
+					<ul>
+						<li>ML FinTech ➡ microservices and k8s</li>
+						<li>Before:<br />1 z 10 Indonesian mobile ecommerce<br />(Rocket Internet)</li>
+						<li>Spent 3.5y with Openstack:<br />small team, 1000+ nodes, 21 data centers</li>
+	<li>I do not like INFRA :D</li>
+					</ul>
+				</section>
+
+				<section data-background="img/intro/company_welcome.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+				<section data-background="img/intro/my_experience.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+				<section data-background="img/intro/black_box.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+				<section data-background="img/intro/lingua_franca.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+				<section data-background="img/intro/learn_as_you_go.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+				<section data-background="img/intro/app_way_smarter.png" data-background-repeat="" data-background-size="100%">
+				</section>
+
+<!--
+#################################################################
+K8s Intro
+#################################################################
+-->
+				<section>
+					<h3>Kubernetes</h3>
+				</section>
+
+				<section>
+					<h4>Kubernetes</h4>
+					<ul>
+						<li>Container orchiestration</li>
+						<li>Batteries for your 12factory apps*</li>
+						<li>...heading to integration platform</li>
+						<li>Independent from IaaS provider</li>
+					</ul>
+					<p><small>* - not only</small></p>
+				</section>
+
+
+								<section>
+									<h3>Kubernetes</h3>
+									<img src="img/k8s_intro.svg" style="width:90%"/>
+									<small><code>make docker_push; kubectl create -f app-srv-dpl.yaml</code></small>
+								</section>
+
+
+
+								<section>
+									<h3>Scale up! Scale down!</h3>
+									<img src="img/k8s_intro_scale_up.svg" style="width:90%"/>
+									<small><code>kubectl --replicas=3 -f app-srv-dpl.yaml</code></small>
+								</section>
+
+								<section>
+									<h3>Scale up! Scale down!</h3>
+									<img src="img/k8s_intro_scale_down.svg" style="width:90%"/>
+									<small><code>kubectl --replicas=1 -f app-srv-dpl.yaml</code></small>
+								</section>
+
+				<section>
+					<h4>Basic Concepts</h4>
+					<p><table>
+						<thread>
+							<tr>
+								<th>Name</th><th>Purpose</th><th></th>
+							</tr>
+						</thread>
+						<tbody>
+							<tr>
+								<td>Service</td><td>Interface</td><td>Entry point (Service Name)</td>
+							</tr>
+							<tr>
+								<td>Deployment</td><td>Factory</td><td>How many pods, which pods</td>
+							</tr>
+							<tr>
+								<td>Pod</td><td>Implementation</td><td>1+ docker running</td>
+							</tr>
+						</tbody>
+					</table></p>
+				</section>
+
+								<section data-markdown>
+									<script type="text/template">
+				## Rolling updates!
+
+				<img src="img/k8s_updates_rolling_1.svg" style="width:80%"/>
+				<small><code>kubectl set image deployment/app app=app:v2.0.0</code></small>
+									</script>
+								</section>
+
+								<section data-markdown>
+									<script type="text/template">
+				## Rolling updates!
+
+				<img src="img/k8s_updates_rolling_2.svg" style="width:80%"/>
+				<small><code>kubectl set image deployment/app app=app:v2.0.0</code></small>
+									</script>
+								</section>
+
+								<!-- RollingUpdateStrategy -->
+								<!-- maxUnavailable -->
+								<section data-markdown>
+									<script type="text/template">
+				## Rolling updates!
+
+				<img src="img/k8s_updates_rolling_3.svg" style="width:80%"/>
+				<small><code>kubectl set image deployment/app app=app:v2.0.0</code></small>
+									</script>
+								</section>
+
+
+								<section>
+									<h2>How get user requests?</h2>
+				<img src="img/traefik_architecture.svg" width="90%"/>
+				<small>Ingress Controller</small>
+								</section>
+
+								<section data-markdown>
+									<script type="text/template">
+				### Ingress
+
+				<table>
+					<thread>
+						<tr>
+							<th>Pattern</th><th>Target App Service</th>
+						</tr>
+					</thread>
+					<tbody>
+						<tr>
+							<td>api.smacc.io/v1/users</td><td>users-v1</td>
+						</tr>
+						<tr>
+							<td>api.smacc.io/v2/users</td><td>users-v2</td>
+						</tr>
+						<tr>
+							<td>smacc.io</td><td>web</td>
+						</tr>
+					</tbody>
+				</table>
+									</script>
+								</section>
+
+								<section data-markdown>
+									<script type="text/template">
+				### Service Discovery
+
+				- names in DNS: <br /><code>curl http://users/list</code>
+				- labels:<br /><code>name=value</code>
+				- annotations: <br /><code>prometheus.io/scrape: "true"</code>
+									</script>
+								</section>
+
+								<section data-markdown>
+									<script type="text/template">
+								### Service Discovery
+								- loosely couple components
+								- auto-wiring with logging and monitoring
+							</script>
+						</section>
+
+						<section>
+							<h3><span style="text-transform: lowercase;">service.yaml</span></h3>
+							<pre><code class="yaml">apiVersion: apps/v1
+apiVersion: v1
+kind: Service
+metadata:
+  name: intro-app-svc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: intro-app
+  type: LoadBalancer</code></pre>
+<p><small>https://github.com/wojciech12/workshop_kubernetes_and_cloudnative</small></p>
+						</section>
+
+						<section>
+							<h3><span style="text-transform: lowercase;">Deployment.yaml</span></h3>
+
+							<pre><code class="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-api
+  labels:
+    app: demo-api
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: demo-api
+  template:
+    metadata:
+      labels:
+        app: demo-api
+    spec:
+      containers:
+      - name: app
+        image: wojciech11/api-status:1.0.0
+        ports:
+        - containerPort: 80</code></pre>
+<p><small>https://github.com/wojciech12/workshop_kubernetes_and_cloudnative</small></p>
+						</section>
+
+
+				<section data-markdown>
+					<script type="text/template">
+### All hail the git!
+
+- Yaml
+- integration:<br />monitoring, alarming, ingress-controller
+- ...
+- Devs can forget about infra... almost
+- DevOps Culture Dream!
+
+<p><small>+ all tools -&gt; CRD </small></p>
+					</script>
+				</section>
+
+<section>
+<h2>Kubernetes @ Azure</h2>
+</section>
+
+<section>
+	<h3>Options</h3>
+	<ul>
+		<li>AKS - managed</li>
+		<li><s>ACS</s></li>
+		<li>Your own installation with installer</li>
+		<li>RedHat Openshift</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Azure Kubernetes Service</h3>
+<ul>
+	<li>GKE for Google</li>
+	<li>EKS or Fargate for Amazon</li>
+</ul>
+</section>
+
+<section>
+	<h3>AKS</h3>
+<ul>
+	<li>Independent from IaaS</li>
+	<li>Our OnPrem = Our OnCloud</li>
+	<li>Reuse all my knowhow from OnPrem and GKE</li>
+	<li>Plug and play, e.g., monitoring</li>
+</ul>
+</section>
+
+<section>
+	<h3>AKS</h3>
+	<ul>
+		<li>Managed kuberenetes</li>
+		<li>Integration with Azure Infrastrukture</li>
+		<li>Addons: monitoring</li>
+	</ul>
+	<p><small>See <a href="https://github.com/MicrosoftDocs/azure-docs/tree/master/articles/aks">docs</a></small></p>
+</section>
+
+<section>
+	<h3>Azure K8S Integration</h3>
+	<ul>
+		<li>Load Balancers</li>
+		<li>Persistence Volumes including Resizable Volumes</li>
+		<li>Graphic Cards Support</li>
+		<li>Authentication and the Azure AD integration</li>
+		<li>Monitoring as an addon</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Managed</h3>
+	<ul>
+		<li>You: k8s workers</li>
+		<li>Azure: k8s masters</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Managed - You</h3>
+	<ul>
+		<li>Upgrade your k8s</li>
+		<li>Can ssh to your workers</li>
+		<li>Can modify and restart kube-system pods</li>
+		<li>Node updates when we restart a node</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Managed - Azure</h3>
+	<ul>
+		<li>update your kube-system pods</li>
+		<li>k8s config</li>
+		<li>updates on nodes mem-pres and on-restart</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Updates from Azure</h3>
+	<p>Bumpy but no time to waste!</p>
+	<ul>
+		<li>Kubernetes configuration - &#x2620;</li>
+		<li>System memory-preserving updates - &#x2620;</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Limits</h3>
+	<ul>
+		<li>No node-pool support</li>
+		<li>Volumes in MC_YOUR_CLUSTER_NAME<br />resource group &#x2620;</li>
+		<li>CD: Service Principle for AKS gets always an admin token</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Annoying</h3>
+	<ul>
+		<li>Limits</li>
+		<li>Slow attaching and detaching volumes</li>
+		<li>Watch out:<br />limits volumes attached to node (1 core = 1 disc)</li>
+		<li><s>Slow deletes</s></li>
+		<li><s>You are not able to delete a pod without <code>--force</code></s></li>
+	</ul>
+</section>
+
+<section>
+<h3>Love!</h3>
+<ul>
+	<li>Openness on github: <a href="https://github.com/Azure/AKS/issues">AKS issues</a></li>
+</ul>
+</section>
+
+<!--
+#################################################################
+AKS @ Hypatos.ai
+#################################################################
+-->
+<section>
+<h2>AKS<br />@ SMACC.io / Hypatos.ai</h2>
+</section>
+
+<section>
+	<h3>Our setup Azure (1)</h3>
+	<ul>
+		<li>az aks CLI for setting k8s</li>
+		<li>aks imported to terraform</li>
+		<li>Terraform for everything else</li>
+	</ul>
+	<p><small>TF also sets our AWS</small></p>
+</section>
+
+<section>
+	<h3>Our setup Azure (2)</h3>
+	<ul>
+		<li>Create AKS clusters with TF</li>
+	</ul>
+</section>
+
+<section>
+<h3>Databases 1: Managed</h3>
+<ul>
+	<li>Postgres</li>
+	<li>CosmosDB as Mongodb</li>
+</ul>
+</section>
+
+<section>
+<h3>Databases 2: in AKS</h3>
+<ul>
+	<li>Postgres</li>
+	<li>Mongodb</li>
+	<li>Kafka</li>
+	<li>Etc/Vault</li>
+</ul>
+<p><small>Note: you should know what you do.<br />Replication factor and Backup.</small></p>
+</section>
+
+<section>
+	<h3>Tech</h3>
+	<ul>
+		<li>Golang for all</li>
+		<li>Python for Machine Learning</li>
+		<li>JS && Emberjs WebUI</li>
+		<li>OpenAPI</li>
+		<li>ML Pipeline - evaluate kubeflow i patchyderm</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Kubernetes</h3>
+	<ul>
+		<li>Pure, generated, kubernetes config</li>
+		<li>2x kubernetes operators</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Cloud Native</h3>
+	<ul>
+		<li>Observability: Prometheus stack and EFK</li>
+		<li>Traefik for ingress</li>
+		<li>etcd + Vault</li>
+	</ul>
+</section>
+
+<section>
+<h3>Continuous Deployment</h3>
+<ul>
+	<li>Github</li>
+	<li>TravisCI</li>
+	<li>hub.docker.com</li>
+	<li>Kubernetes</li>
+</ul>
+<p><small>In spirit similar to the <a href="https://www.youtube.com/watch?v=kOa_llowQ1c">Kelsey Hightower approach</a></small></p>
+</section>
+
+<section>
+<h3>Continuous Deployment</h3>
+<ul>
+	<li>master -&gt; dev</li>
+	<li>tag -&gt; staging</li>
+	<li>PR accepted -&gt; production</li>
+</ul>
+<p><small>In spirit similar to the <a href="https://www.youtube.com/watch?v=kOa_llowQ1c">Kelsey Hightower approach</a></small></p>
+</section>
+
+<!-- section>
+<h2>Backup</h2>
+<ul>
+	<li>Ark for k8s artifacts</li>
+	<li>CronJobs that backups databases</li>
+	<li>Included backup mechanism in etcd-operator</li>
+	<li>Kafka - still investigating</li>
+</ul>
+</section -->
+
+<!-- 
+	How to start
+-->
+<section>
+<h2>How to start</h2>
+</section>
+
+<section>
+	<h3>Prerequirements</h3>
+	<ul>
+		<li>az CLI</li>
+		<li>kubectl</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Create</h3>
+
+	<pre><code>az aks create --name my-aks-pet \
+  --resource-group GROUP \
+  --node-vm-size 'Standard_D4_v2' \
+  --node-count 4 \
+  --service-principal \
+  --client-secret</code></pre>
+
+<p><small>Always with SP! TF recommended</small></p>
+</section>
+
+<section>
+<h3>Create</h3>
+<ul>
+	<li>Demo:  <a href="https://portal.azure.com/">portal</a></li>
+</ul>
+<p><small>Do not create AKS throught portal</small></p>
+</section>
+
+<section>
+<h3>Ready to go!</h3>
+
+<pre><code>az aks get-credentials \
+  -g GROUP \
+  -n MyAKSPet</code></pre>
+</section>
+
+<section>
+	<h3>Ready to go!</h3>
+	<pre><code>kubectl get pods</code></pre>
+</section>
+
+<section>
+	<h3>Ready to go!</h3>
+	<pre><code>
+$ git clone \
+  git@github.com:wojciech12/workshop_kubernetes_and_cloudnative.git
+$ kubectl apply -f introduction/kube-deployment.yml
+$ kubectl apply -f introduction/kube-service.yml
+	</code></pre>
+	<p><small> </small></p>
+</section>
+
+<section>
+	<h3>Ready to go!</h3>
+	<pre><code>kubectl get pods</code></pre>
+</section>
+
+<!--
+#################################################################
+Tips and Hints
+#################################################################
+-->
+<section>
+<h2>Tips and Hints</h2>
+</section>
+
+<section>
+	<h3>Common problems</h3>
+	<ul>
+		<li>DNS is dead - it is so-k8s</li>
+		<li>Worker node lost connectivity</li>
+		<li>Memory-preserving update hits hard</li>
+		<li>Slow volume detaching/attaching</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Problems</h3>
+	<p>Solving Problems Heuristics</p>
+	<ul>
+		<li>Check the age of system pods :D</li>
+		<li>If sth does work -&gt; resize your cluster</li>
+		<li>Deleting system pods might help</li>
+		<li>Restarting a node might help</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Update</h3>
+	<ol>
+		<li>Check what GKE supports</li>
+		<li>Check issues on <a href="https://github.com/Azure/AKS/issues">github.com/Azure/AKS</a></li>
+		<li>Analyze:<br /><code>az aks get-versions -o table -l westeurope</code></li>
+	</ol>
+</section>
+
+<section>
+	<h3>Update</h3>
+	<ol start="4">
+		<li>Analyze:<br /><code>az aks get-upgrades -g GROUP  --name my-aks-pet -o table</code></li>
+	</ol>
+</section>
+
+<section>
+	<h3>Update</h3>
+	<ol start="5">
+		
+		<li>You MUST not<br /> 1.8.0 -&gt; 1.9.10, better: 1.8.0 -&gt; 1.8.11 first</li>
+		<li>The last step: <pre><code>az aks upgrade --name my-aks-pet \
+  --resource-group GROUP \
+  --output table  \
+  --kubernetes-version 1.10.8</code></pre></li>
+	</ol>
+</section>
+
+<section>
+<h3>Azure Updates - Nodes</h3>
+
+<pre><code>NAME                       VERSION   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-27173880-0   v1.10.3   Ubuntu 16.04.4 LTS   4.15.0-1018-azure   docker://1.13.1
+aks-nodepool1-27173880-1   v1.10.3   Ubuntu 16.04.4 LTS   4.15.0-1018-azure   docker://1.13.1
+aks-nodepool1-27173880-2   v1.10.3   Ubuntu 16.04.4 LTS   4.15.0-1018-azure   docker://1.13.1
+aks-nodepool1-27173880-3   v1.10.3   Ubuntu 16.04.4 LTS   4.15.0-1018-azure   docker://1.13.1
+aks-nodepool1-27173880-5   v1.10.3   Ubuntu 16.04.4 LTS   4.15.0-1019-azure   docker://1.13.1</code></pre>
+
+<p><small><code>kubectl get nodes -o wide</code></small></p>
+</section>
+
+
+<section>
+	<h3>Update</h3>
+
+<pre><code>Name   MasterVersion    NodePoolVersion    Upgrades
+-------  ---------------  -----------------  --------------------------------------
+default            1.10.3           1.10.3             1.10.5, 1.10.6, 1.10.7, 1.11.1, 1.11.2</code></pre>
+
+<pre><code>az aks get-upgrades -g GROUP \
+  --name my-aks-pet -o table</code></pre>
+</section>
+
+<section>
+<h3>Upgrade</h3>
+<pre><code>az aks upgrade --name my-aks-pet \
+  --resource-group GROUP \
+  --output table \
+  --kubernetes-version 1.10.3</code></pre>
+
+<small>Do not rush!</small>
+</section>
+
+<!--
+#################################################################
+Future: Istio
+#################################################################
+-->
+<section>
+	<h2>Istio. Future?</h2><!-- https://github.com/cncf/artwork -->
+	<img src="img/istio/istio-bluelogo-nobackground-framed.svg" style="width:40%" />
+</section>
+
+<section>
+	<h5>Istio</h5>
+	<img src="img/istio/service-mesh.svg" style="width:80%" />
+</section>
+
+<section>
+	<h5>Istio</h5>
+	<img src="img/istio/arch.svg"  style="width:80%" />
+</section>
+
+<section>
+<h3>Istio</h3>
+<ul>
+	<li>Service Mesh</li>
+	<li>Networking control given to operator</li>
+	<li>Encryption everywhere</li>
+	<li>Observability for everything except your code</li>
+</ul>
+</section>
+
+<section>
+<h3>Istio</h3>
+<ul>
+	<li>Next time, demo</li>
+</ul>
+</section>
+
+<!--
+###################
+Summary
+###################
+-->
+<section>
+<h2>Summary</h2>
+<ul>
+	<li>K8S not a silver bullet, but damn close</li>
+	<li>No time to waste, check K8S</li>
+	<li>AKS the easiest way to start with AKS in Azure</li>
+	<li>Less bumpy then before - see <a href="https://github.com/Azure/AKS/issues">github issues</a></li>
+</ul>
+</section>
+
+<section>
+<h2>Summary</h2>
+<ul>
+	<li>Wish for ones who trust only in MS: AKS onPrem</li>
+	<li>If not: Vanilla on Ubuntu, CentOS/RH Openshift, SUSE Cloud App Platfrom</li>
+</ul>
+</section>
+
+<section>
+<h3><span style="text-transform: lowercase;">github.com/wojciech12</span></h3><br />
+<h3><span style="text-transform: lowercase;">wbarczynski.pl/talks</span></h3><br />
+<h3><span style="text-transform: lowercase;">wbarczynski.pro@gmail.com</span></h3>
+</section>
+
+<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom"
+			style="position: relative; top:0">
+				<h4>Dziękuję. Pytania?</h4>
+				<p>ps. We are hiring.</p><!-- Developers, Frontend, System Engineers -->
+			</section>
+
+				<!--
+					BACKUP SLIDES
+				-->
+			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom" style="position: relative; top:0">
+				<h2>Backup Slides</h2>
+			</section>
+
+			<section>
+			<h4>Hiring</h4>
+			<ul>
+				<li>Senior Polyglot Software Engineers</li>
+				<li>Frontend Engineers</li>
+				<li>1 Data-Driven Product Manager</li>
+			</ul>
+			<p><small>Apply: hello-warsaw@smacc.io,<br />Questions? wb@hypatos.ai, <a href="https://www.facebook.com/wojciech.barczynski.161">FB</a> or <a href="https://www.linkedin.com/in/wojciechbarczynski/">LI</a></small></p>
+			<p><small>We will teach you Go if needed. No k8s or ML, we will take care of that.</small></p>
+			</section>
+
+			<section>
+				<h1>Kubernetes Concepts</h1>
+			</section>
+
+		<section>
+			<img src="img/backup_slides/k8s_deployment_and_pods.svg" style="width:90%"/>
+		</section>
+
+		<section>
+			<img src="img/backup_slides/k8s_service_and_pods.svg" style="width:90%" />
+		</section>
+
+		<section>
+	<h3>Pods</h3>
+	<div class="container">
+		<div class="row">
+			<div class='col-md-6'>
+				<ul>
+					<li>See each other on localhost</li>
+					<li>Live and die together</li>
+					<li>Can expose multiple ports</li>
+				</ul>
+			</div>
+			<div class='col-md-5'>
+				<img src="img/backup_slides/k8s_pod.svg" style="width:90%" />
+			</div>
+		</div>
+	</div>
+</section>
+
+<section>
+	<h3>Side-cars</h3>
+	<img src="img/backup_slides/k8s_pod_2.svg" style="width:90%" />
+</section>
+
+					<section>
+						<h4>Rolling Release with Deployments</h4>
+						<img src="img/backup_slides/k8s_rolling_out_updates.svg" style="width:80%"><br />
+						<small>Also possible</small>
+					</section>
+		</div>
+	</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
